@@ -4,34 +4,37 @@ import javax.crypto.Cipher;
 
 public class CifradoAsimetrico {
 
-    public static byte[] cifrar(Key llave, String algoritmo, String texto) {
-        byte[] textoCifrado;
+    public static byte[] cifrar(Key llavePublica, String algoritmo, String mensaje) {
+        byte[] mensajeCifrado;
         try {
             Cipher cifrador = Cipher.getInstance(algoritmo);
-            byte[] textoClaro = texto.getBytes();
+            cifrador.init(Cipher.ENCRYPT_MODE, llavePublica);
 
-            cifrador.init(Cipher.ENCRYPT_MODE, llave);
-            textoCifrado = cifrador.doFinal(textoClaro);
+            byte[] textoClaro = mensaje.getBytes();
+            mensajeCifrado = cifrador.doFinal(textoClaro);
 
-            return textoCifrado;
+            return mensajeCifrado;
 
         } catch (Exception e) {
-            System.out.println("Excepcion: " + e.getMessage());
+            System.out.println("Error al cifrar el texto: " + e.getMessage());
             return null;
         }
     }
 
-    public static byte[] descifrar(Key llave, String algoritmo, byte[] texto) {
-        byte[] textoClaro;
+    public static byte[] descifrar(Key llavePrivada, String algoritmo, byte[] mensajeCifrado) {
+        byte[] mensajeDecifrado;
         try {
             Cipher cifrador = Cipher.getInstance(algoritmo);
-            cifrador.init(Cipher.DECRYPT_MODE, llave);
-            textoClaro = cifrador.doFinal(texto);
+            cifrador.init(Cipher.DECRYPT_MODE, llavePrivada);
+
+            mensajeDecifrado = cifrador.doFinal(mensajeCifrado);
+            return mensajeDecifrado;
+            
         } catch (Exception e) {
-            System.out.println("Excepcion: " + e.getMessage());
+            System.out.println("Error al descifrar el texto: " + e.getMessage());
             return null;
         }
-        return textoClaro;
+        
     }
 
 }
